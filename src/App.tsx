@@ -1,5 +1,7 @@
-import { useState } from "react";
+import * as React from "react";
 import "./App.css";
+
+
 const emojis = {
   "🙈": "See-No-Evil Monkey",
   "🙉": "Hear-No-Evil Monkey",
@@ -39,20 +41,30 @@ const emojis = {
   "🐘": "Elephant",
 };
 function App() {
-  const [text, setText] = useState(
+  const [text, setText] = React.useState(
     "Search/click on emojis to see their meanings"
   );
-  const handleClick = (emoji) => {
+  const handleClick = (emoji:string) => {
     setText(emojis[emoji]);
   };
-  const handleChange = (e) => {
-    if (emojis[e.target.value] === undefined) {
+  
+  const emojisKeys = Object.keys(emojis);
+  const emojiValues = Object.values(emojis);
+
+  const handleChange = (e:string) => {
+    const foundText = emojiValues.findIndex(em => em === e);
+
+    if (foundText<0 && emojis[e] === undefined) {
       setText("Not found in our database!");
     } else {
-      setText(emojis[e.target.value]);
+      if(foundText>=0){
+        setText(emojisKeys[foundText]);
+      }else {
+        setText(emojis[e]);
+      }
     }
   };
-  const emojisKeys = Object.keys(emojis);
+  
   return (
     <div>
       <header className="header">
@@ -63,7 +75,7 @@ function App() {
           placeholder="Add emojis here"
           className="main-input"
           type="text"
-          onChange={handleChange}
+          onChange={(e) => handleChange(e.target.value)}
         />
         <div className="main-text">{text}</div>
         <div className="emojis">
